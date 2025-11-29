@@ -1,0 +1,45 @@
+.main-bg {
+  background: linear-gradient(135deg, #121212 0%, #1a1a2e 100%);
+  min-height: 85vh;
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #A5D6A7, #80CBC4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glass-card {
+  background: rgba(26, 33, 27, 0.7) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(165, 214, 167, 0.1);
+  border-radius: 16px;
+}
+
+.code-font textarea {
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.code-output {
+  font-family: monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: #E0E0E0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.glass-header {
+  background: rgba(18, 18, 18, 0.8) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(165, 214, 167, 0.1);
+}
+
+footer {
+  background: linear-gradient(10deg, #121212 0%, #1a1a2e 100%) !important;
+  backdrop-filter: blur(24px) !important;
+}
