@@ -30,12 +30,12 @@
                 </v-row>
               </v-card>
             </v-col>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="6" style="max-width: 560px">
               <v-textarea v-model="inputText" label="Input Lines" variant="outlined" rows="15" class="code-font"
                 color="primary" bg-color="rgba(0,0,0,0.3)" @blur="copyResultOnBlur"></v-textarea>
             </v-col>
 
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="6" style="max-width:560px">
               <OutputCard title="Joined Result" :content="joinedText" />
             </v-col>
           </v-row>
