@@ -111,6 +111,9 @@
                     <v-col cols="12" md="6">
                       <v-switch v-model="sortLines" label="Sort lines" color="primary" inset></v-switch>
                     </v-col>
+                    <v-col cols="12" md="6">
+                      <v-switch v-model="removeDuplicates" label="Remove duplicates" color="primary" inset></v-switch>
+                    </v-col>
                   </v-row>
                 </div>
               </v-expansion-panel-text>
@@ -151,6 +154,7 @@ const lineSuffix = ref('')
 const trim = ref(true)
 const removeEmpty = ref(true)
 const sortLines = ref(true)
+const removeDuplicates = ref(true)
 
 // Statistics
 const stats = computed(() => {
@@ -204,6 +208,11 @@ const joinedText = computed(() => {
     lines = lines.map(line => line.trim())
   }
 
+  // Remove duplicates if enabled
+  if (removeDuplicates.value) {
+    lines = [...new Set(lines)]
+  }
+
   // Sort lines if enabled
   if (sortLines.value) {
     lines = lines.sort((a, b) => a.localeCompare(b))
@@ -228,6 +237,7 @@ const applyWMSPreset = () => {
   trim.value = true
   removeEmpty.value = true
   sortLines.value = true
+  removeDuplicates.value = true
 }
 
 const applySQLINPreset = () => {
@@ -239,6 +249,7 @@ const applySQLINPreset = () => {
   trim.value = true
   removeEmpty.value = true
   sortLines.value = true
+  removeDuplicates.value = true
 }
 
 // Apply WMS preset on page load
