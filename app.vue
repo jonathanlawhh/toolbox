@@ -13,7 +13,10 @@
       <v-btn to="/jsonmap" variant="text" class="text-grey-lighten-1 mr-2">
         JSON Mapping
       </v-btn>
-      <v-btn to="/linejoiner" variant="text" class="text-grey-lighten-1 mr-4">
+      <v-btn to="/json-generator" variant="text" class="text-grey-lighten-1 mr-4">
+        JSON Generator
+      </v-btn>
+      <v-btn to="/linejoiner" variant="text" class="text-grey-lighten-1 mr-2">
         Line Joiner
       </v-btn>
     </v-app-bar>
