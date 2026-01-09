@@ -10,9 +10,9 @@
       <v-btn to="/" variant="text" class="text-grey-lighten-1 mr-2">
         Home
       </v-btn>
-      <v-btn to="/jsonmap" variant="text" class="text-grey-lighten-1 mr-2">
+      <!-- <v-btn to="/jsonmap" variant="text" class="text-grey-lighten-1 mr-2">
         JSON Mapping
-      </v-btn>
+      </v-btn> -->
       <v-btn to="/json-generator" variant="text" class="text-grey-lighten-1 mr-4">
         JSON Generator
       </v-btn>

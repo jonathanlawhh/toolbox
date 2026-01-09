@@ -35,9 +35,11 @@ A utility to join multiple lines of text with custom delimiters, prefixes, suffi
 - Sort lines alphabetically
 - Statistics (total, duplicate, unique, empty lines)
 
-### JSON Mapping
+### JSON Generator
 
-Transform JSON data using a schema mapping. Features include:
+Generate a JSON array by injecting data into a template. Features include:
 
-- Generate schema from sample JSON
-- Map keys between source and target schemas
+- Custom delimiter support
+- Duplicate line removal
+- Live preview of generated JSON
+- Template placeholders for data columns

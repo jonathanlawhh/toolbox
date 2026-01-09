@@ -20,33 +20,38 @@
                                         <div class="text-h6 text-primary">{{ stats.totalItems }}</div>
                                     </v-col>
                                     <v-col cols="6">
-                                        <div class="text-caption text-grey-lighten-2">Valid JSON Objects</div>
-                                        <div class="text-h6 text-success">{{ stats.validItems }}</div>
+                                        <div class="text-caption text-grey-lighten-2">Duplicate Lines</div>
+                                        <div class="text-h6 text-secondary">{{ stats.duplicateLines }}</div>
                                     </v-col>
                                 </v-row>
                             </v-card>
                         </v-col>
 
-                        <v-col cols="12" md="6">
+                        <v-col cols="12" md="4">
                             <v-textarea v-model="dataInput" label="Data Input (Multiple Rows)" variant="outlined"
-                                rows="15" class="code-font" color="primary" bg-color="rgba(0,0,0,0.3)"
-                                hint="One item per line" persistent-hint clearable
+                                rows="15" class="code-font" color="primary" bg-color="rgba(0,0,0,0.3)" clearable
                                 @blur="copyResultOnBlur"></v-textarea>
                         </v-col>
 
-                        <v-col cols="12" md="6">
+                        <v-col cols="12" md="3">
+                            <OutputCard title="Input Mapping" :content="idMapping" />
+                        </v-col>
+
+                        <v-col cols="12" md="5">
                             <v-textarea v-model="jsonTemplate" label="JSON Template" variant="outlined" rows="15"
-                                class="code-font" color="secondary" bg-color="rgba(0,0,0,0.3)"
-                                hint="Use {{INPUT_DATA_01}} as placeholder" persistent-hint clearable
+                                class="code-font" color="secondary" bg-color="rgba(0,0,0,0.3)" clearable
                                 @blur="copyResultOnBlur"></v-textarea>
                         </v-col>
 
                         <v-col cols="12" md="6">
                             <v-card class="glass-card pa-4" elevation="4">
-                                <div class="text-subtitle-2 mb-3 text-grey-lighten-1">
+                                <div class="text-subtitle-1 font-weight-bold mb-8 text-grey-lighten-1">
                                     <v-icon size="small" class="mr-1">mdi-cog-outline</v-icon>
                                     Configuration
                                 </div>
+                                <v-text-field v-model="delimiter" label="Delimiter" variant="outlined" density="compact"
+                                    hide-details class="mb-3" placeholder="," max-width="128px"
+                                    hint="Character to split each line by"></v-text-field>
                                 <v-switch v-model="removeDuplicates" label="Remove duplicates" color="primary" inset
                                     hide-details></v-switch>
                             </v-card>
@@ -63,12 +68,10 @@
                     <div class="text-subtitle-2">How to use</div>
                     <div class="text-caption">
                         1. Enter your data in the left box, one item per line.<br>
-                        2. Enter a JSON object template in the right box, using <code v-pre>{{ INPUT_DATA_01 }}</code>
-                        where
-                        you
-                        want the
-                        data to appear.<br>
-                        3. The tool will generate a JSON array containing one object for each line of data.
+                        2. If using a delimiter (e.g., comma), splits will be available as <code>{{ [0] }}</code>,
+                        <code>{{ [1] }}</code>, etc.<br>
+                        3. Enter a JSON object template in the right box.<br>
+                        4. The tool will generate a JSON array containing one object for each line of data.
                     </div>
                 </v-alert>
 
@@ -92,28 +95,69 @@ useHead({
 })
 
 const dataInput = ref('')
-const jsonTemplate = ref('{\n  "id": "{{INPUT_DATA_01}}",\n  "value": "Sample"\n}')
+const jsonTemplate = ref('{\n  "id": "{{[0]}}",\n  "value": "{{[1]}}"\n}')
+const delimiter = ref(',')
 const removeDuplicates = ref(true)
 const snackbar = ref(false)
 
+const processTemplate = (template: string, line: string, delim: string) => {
+    let tailored = template
+    const trimmedLine = line.trim()
+
+    let parts = [trimmedLine]
+    // If no delimeter, return the whole line
+    if (delim) {
+        parts = trimmedLine.split(delim).map(p => p.trim())
+    }
+
+    tailored = tailored.replace(/{{(\[(\d+)\])}}/g, (match, fullGroup, indexStr) => {
+        const index = parseInt(indexStr, 10)
+        return parts[index] !== undefined ? parts[index] : ''
+    })
+
+    return tailored
+}
+
 const stats = computed(() => {
     const lines = dataInput.value ? dataInput.value.split(/\r?\n/).filter(l => l.trim() !== '') : []
-    // We calculate valid items based on whether the substitution result is valid JSON
-    let valid = 0
+    const lineCount = new Map<string, number>()
+
     lines.forEach(line => {
-        const tailored = jsonTemplate.value.replace(/{{INPUT_DATA_01}}/g, line.trim())
-        try {
-            JSON.parse(tailored)
-            valid++
-        } catch (e) {
-            // invalid
+        const trimmed = line.trim()
+        lineCount.set(trimmed, (lineCount.get(trimmed) || 0) + 1)
+    })
+
+    let duplicates = 0
+    lineCount.forEach(count => {
+        if (count > 1) {
+            duplicates += count - 1
         }
     })
 
     return {
         totalItems: lines.length,
-        validItems: valid
+        duplicateLines: duplicates
     }
+})
+
+const idMapping = computed(() => {
+    if (!dataInput.value || !jsonTemplate.value) return '{}'
+
+    const lines = dataInput.value.split(/\r?\n/)
+    const firstLine = lines[0]
+
+    // If no delimeter, return the whole line
+    if (!delimiter.value) return JSON.stringify({ '{{[0]}}': firstLine }, null, 2)
+
+    const valueMap = firstLine.split(delimiter.value)
+
+    let idMap: Record<string, string> = {}
+    for (let i = 0; i < valueMap.length; i++) {
+        const tmpMapId = '{{[' + i.toString() + ']}}'
+        idMap[tmpMapId] = valueMap[i]
+    }
+
+    return JSON.stringify(idMap, null, 2)
 })
 
 const generatedJson = computed(() => {
@@ -129,35 +173,14 @@ const generatedJson = computed(() => {
     const objects: any[] = []
 
     lines.forEach(line => {
-        const trimmedLine = line.trim() // Trim the input data usually
-        // Simple string replacement
-        const tailored = jsonTemplate.value.replace(/{{INPUT_DATA_01}}/g, trimmedLine)
+        const tailored = processTemplate(jsonTemplate.value, line, delimiter.value)
 
         try {
             // Try to parse as JSON to ensure we output a valid JSON array of objects
             const parsed = JSON.parse(tailored)
             objects.push(parsed)
         } catch (e) {
-            // If it fails to parse (e.g. user made strings without quotes), we can't easily include it in a purely valid JSON array 
-            // without it being a string or fixing it. 
-            // For now, let's include it if it's a "string" but since we want an array of objects/mixed, 
-            // maybe we just push a placeholder or the raw string if the user intends that?
-            // But typically "JSON Generator" implies structural validity.
-            // Let's create a fallback object including error or just skip? 
-            // User request: "replace... combine... output". 
-            // If the template is just a string `{{INPUT_DATA_01}}` (no quotes), result might be `value`. 
-            // If that's not valid JSON (like a string without quotes), JSON.parse fails.
-
-            // Let's be lenient: If parse fails, treat the whole tailored string as a string value? 
-            // No, that might confuse structure. 
-            // Let's just try to fix common issues or just ignore?
-            // Better strategy: If we can't parse it, we don't add it to the 'real' JSON array but maybe we should show an error?
-            // Given the tool nature, let's just attempt to push a string representation if object parse fails, 
-            // or simplisticly: just push the raw string if it looks like a primitive, otherwise skip.
-            // Actually, safest is to just output what we can. 
-            // Let's push an error object? { "error": "Invalid JSON", "raw": ... }?
-            // Or just skip.
-            // Let's just ignore invalid ones to keep the array valid, but the stats show mismatch.
+            // Ignore invalid JSON
         }
     })
 

@@ -11,13 +11,13 @@
 
                 <v-row>
                     <v-col cols="12" md="6">
-                        <v-card class="glass-card pa-6" elevation="4" hover to="/jsonmap">
+                        <v-card class="glass-card pa-6" elevation="4" hover to="/json-generator">
                             <div class="d-flex align-center mb-3">
                                 <v-icon size="large" color="primary" class="mr-3">mdi-code-json</v-icon>
-                                <h2 class="text-h5 text-grey-lighten-1">JSON Mapping</h2>
+                                <h2 class="text-h5 text-grey-lighten-1">JSON Generator</h2>
                             </div>
                             <p class="text-body-2 text-grey-lighten-2">
-                                Transform JSON data using custom schema mappings
+                                JSON generator based on data input
                             </p>
                         </v-card>
                     </v-col>
