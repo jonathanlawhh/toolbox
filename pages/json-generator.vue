@@ -41,7 +41,18 @@
                                 @blur="copyResultOnBlur"></v-textarea>
                         </v-col>
 
-                        <v-col cols="12">
+                        <v-col cols="12" md="6">
+                            <v-card class="glass-card pa-4" elevation="4">
+                                <div class="text-subtitle-2 mb-3 text-grey-lighten-1">
+                                    <v-icon size="small" class="mr-1">mdi-cog-outline</v-icon>
+                                    Configuration
+                                </div>
+                                <v-switch v-model="removeDuplicates" label="Remove duplicates" color="primary" inset
+                                    hide-details></v-switch>
+                            </v-card>
+                        </v-col>
+
+                        <v-col cols="12" md="6">
                             <OutputCard title="Generated JSON Array" :content="generatedJson" />
                         </v-col>
                     </v-row>
@@ -82,6 +93,7 @@ useHead({
 
 const dataInput = ref('')
 const jsonTemplate = ref('{\n  "id": "{{INPUT_DATA_01}}",\n  "value": "Sample"\n}')
+const removeDuplicates = ref(true)
 const snackbar = ref(false)
 
 const stats = computed(() => {
@@ -107,7 +119,13 @@ const stats = computed(() => {
 const generatedJson = computed(() => {
     if (!dataInput.value || !jsonTemplate.value) return '[]'
 
-    const lines = dataInput.value.split(/\r?\n/).filter(line => line.trim() !== '')
+
+    let lines = dataInput.value.split(/\r?\n/).filter(line => line.trim() !== '')
+
+    if (removeDuplicates.value) {
+        lines = [...new Set(lines.map(l => l.trim()))]
+    }
+
     const objects: any[] = []
 
     lines.forEach(line => {

@@ -1,5 +1,5 @@
 <template>
-  <v-card class="glass-card pa-4" elevation="4" style="min-height: 200px;">
+  <v-card class="glass-card pa-4" elevation="4" style="min-height: 320px;">
     <div class="d-flex justify-space-between align-center mb-2">
       <div class="text-subtitle-2 text-grey-lighten-1">{{ title }}</div>
       <v-btn icon="mdi-content-copy" variant="text" density="compact" color="grey-lighten-1"
