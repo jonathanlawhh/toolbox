@@ -27,54 +27,75 @@
                             </v-card>
                         </v-col>
 
-                        <v-col cols="12" md="4">
+                        <v-col cols="12" md="4" xl="5">
                             <v-textarea v-model="dataInput" label="Data Input (Multiple Rows)" variant="outlined"
                                 rows="15" class="code-font" color="primary" bg-color="rgba(0,0,0,0.3)" clearable
+                                no-resize @blur="copyResultOnBlur"></v-textarea>
+                        </v-col>
+
+                        <v-col cols="8" md="4" xl="5">
+                            <v-textarea v-model="jsonTemplate" label="JSON Template" variant="outlined" rows="15"
+                                class="code-font" color="secondary" bg-color="rgba(0,0,0,0.3)" clearable no-resize
                                 @blur="copyResultOnBlur"></v-textarea>
                         </v-col>
 
-                        <v-col cols="12" md="3">
+
+                        <v-col cols="4" md="4" xl="2">
                             <OutputCard title="Input Mapping" :content="idMapping" />
                         </v-col>
 
-                        <v-col cols="12" md="5">
-                            <v-textarea v-model="jsonTemplate" label="JSON Template" variant="outlined" rows="15"
-                                class="code-font" color="secondary" bg-color="rgba(0,0,0,0.3)" clearable
-                                @blur="copyResultOnBlur"></v-textarea>
+                        <v-col cols="12" md="4" xl="5">
+                            <v-expansion-panels>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-title class="text-grey-lighten-1">
+                                        <v-icon start icon="mdi-cog-outline" class="mr-2"></v-icon>
+                                        Configuration
+                                    </v-expansion-panel-title>
+                                    <v-expansion-panel-text>
+                                        <div class="mb-4">
+                                            <v-row>
+                                                <v-col cols="12" xl="6">
+                                                    <v-text-field v-model="delimiter" label="Delimiter"
+                                                        variant="outlined" density="compact" hide-details class="mb-3"
+                                                        placeholder="," max-width="128px"
+                                                        hint="Character to split each line by"></v-text-field>
+                                                </v-col>
+                                                <v-col cols="12" xl="6">
+                                                    <v-switch v-model="removeDuplicates" label="Remove duplicates"
+                                                        color="primary" inset></v-switch>
+                                                </v-col>
+                                            </v-row>
+                                        </div>
+                                    </v-expansion-panel-text>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
+
+                            <v-expansion-panels class="mt-8">
+                                <v-expansion-panel>
+                                    <v-expansion-panel-title class="text-grey-lighten-1">
+                                        <v-icon start icon="mdi-information" class="mr-2"></v-icon>
+                                        How to use
+                                    </v-expansion-panel-title>
+                                    <v-expansion-panel-text>
+                                        <div class="text-caption">
+                                            1. Enter your data in the left box, one item per line.<br>
+                                            2. If using a delimiter (e.g., comma), splits will be available as
+                                            <code>{{ [0] }}</code>,
+                                            <code>{{ [1] }}</code>, etc.<br>
+                                            3. Enter a JSON object template in the right box.<br>
+                                            4. The tool will generate a JSON array containing one object for each
+                                            line of data.
+                                        </div>
+                                    </v-expansion-panel-text>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
                         </v-col>
 
-                        <v-col cols="12" md="6">
-                            <v-card class="glass-card pa-4" elevation="4">
-                                <div class="text-subtitle-1 font-weight-bold mb-8 text-grey-lighten-1">
-                                    <v-icon size="small" class="mr-1">mdi-cog-outline</v-icon>
-                                    Configuration
-                                </div>
-                                <v-text-field v-model="delimiter" label="Delimiter" variant="outlined" density="compact"
-                                    hide-details class="mb-3" placeholder="," max-width="128px"
-                                    hint="Character to split each line by"></v-text-field>
-                                <v-switch v-model="removeDuplicates" label="Remove duplicates" color="primary" inset
-                                    hide-details></v-switch>
-                            </v-card>
-                        </v-col>
-
-                        <v-col cols="12" md="6">
+                        <v-col cols="12" md="8" xl="7">
                             <OutputCard title="Generated JSON Array" :content="generatedJson" />
                         </v-col>
                     </v-row>
                 </v-card>
-
-                <!-- Usage Tip -->
-                <v-alert icon="mdi-information" class="mt-4 glass-card" border="start" border-color="primary">
-                    <div class="text-subtitle-2">How to use</div>
-                    <div class="text-caption">
-                        1. Enter your data in the left box, one item per line.<br>
-                        2. If using a delimiter (e.g., comma), splits will be available as <code>{{ [0] }}</code>,
-                        <code>{{ [1] }}</code>, etc.<br>
-                        3. Enter a JSON object template in the right box.<br>
-                        4. The tool will generate a JSON array containing one object for each line of data.
-                    </div>
-                </v-alert>
-
             </v-col>
         </v-row>
         <v-snackbar v-model="snackbar" timeout="2000" color="success">
