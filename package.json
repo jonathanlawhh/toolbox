@@ -19,6 +19,7 @@
     "vuetify": "^3.11.1"
   },
   "devDependencies": {
+    "@vite-pwa/nuxt": "^1.1.1",
     "nuxt-gtag": "^4.1.0"
   }
 }

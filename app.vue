@@ -1,4 +1,5 @@
 <template>
+  <VitePwaManifest />
   <v-app theme="dark">
     <v-app-bar elevation="0" color="transparent" class="glass-header">
       <v-app-bar-title class="text-h5 font-weight-bold text-gradient ml-16">

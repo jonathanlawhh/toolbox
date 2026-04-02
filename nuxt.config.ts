@@ -33,8 +33,51 @@ export default defineNuxtConfig({
         config.plugins.push(vuetify({ autoImport: true }))
       })
     },
-    'nuxt-gtag'
+    'nuxt-gtag',
+    '@vite-pwa/nuxt'
   ],
+
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'Toolbox',
+      short_name: 'Toolbox',
+      description: 'A collection of developer tools including Line Joiner and JSON Mapping.',
+      theme_color: '#121212',
+      background_color: '#121212',
+      icons: [
+        {
+          src: '/favicon.svg',
+          sizes: 'any',
+          type: 'image/svg+xml'
+        },
+        {
+          src: '/favicon.svg',
+          sizes: '192x192',
+          type: 'image/svg+xml'
+        },
+        {
+          src: '/favicon.svg',
+          sizes: '512x512',
+          type: 'image/svg+xml'
+        }
+      ]
+    },
+    workbox: {
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}']
+    },
+    client: {
+      installPrompt: true,
+      periodicSyncForUpdates: 3600
+    },
+    devOptions: {
+      enabled: false,
+      suppressWarnings: true,
+      navigateFallbackAllowlist: [/^\/$/],
+      type: 'module',
+    },
+  },
 
   gtag: {
     id: 'G-LY2LLWHMJY'
